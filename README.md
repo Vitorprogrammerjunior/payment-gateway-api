@@ -103,7 +103,16 @@ cd payment-gateway-api
 
 # 2. Suba os três serviços (app Laravel + MySQL + mocks dos gateways)
 docker compose up -d --build
+
+# Em alguns sistemas Linux pode ser necessário usar sudo:
+# sudo docker compose up -d --build
 ```
+
+> **Linux sem permissão Docker:** Se precisar de `sudo`, você pode evitá-lo adicionando seu usuário ao grupo `docker`:
+> ```bash
+> sudo usermod -aG docker $USER
+> # Faça logout e login novamente para o grupo ser aplicado
+> ```
 
 Aguarde ~20s para o container inicializar (migrations rodam automaticamente). A API estará disponível em `http://localhost:8000`.
 
