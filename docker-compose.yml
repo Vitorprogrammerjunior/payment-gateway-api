@@ -1,0 +1,80 @@
+services:
+
+  # ──────────────────────────────────────────────
+  # Laravel Application
+  # ──────────────────────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
+    container_name: payment_app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - .:/var/www
+    ports:
+      - "8000:8000"
+    environment:
+      APP_ENV: local
+      APP_KEY: base64:uJC4VskEbEcOfVFMzpXO2B78z1ww6Q9MHihBG45RbcE=
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: payment_gateway
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      GATEWAY1_URL: http://gateways:3001
+      GATEWAY1_EMAIL: dev@betalent.tech
+      GATEWAY1_TOKEN: FEC9BB078BF338F464F96B48089EB498
+      GATEWAY2_URL: http://gateways:3002
+      GATEWAY2_AUTH_TOKEN: tk_f2198cc671b5289fa856
+      GATEWAY2_AUTH_SECRET: 3d15e8ed6131446ea7e3456728b1211f
+    depends_on:
+      mysql:
+        condition: service_healthy
+      gateways:
+        condition: service_started
+    networks:
+      - payment_network
+
+  # ──────────────────────────────────────────────
+  # MySQL Database
+  # ──────────────────────────────────────────────
+  mysql:
+    image: mysql:8.0
+    container_name: payment_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: payment_gateway
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "--password=root"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - payment_network
+
+  # ──────────────────────────────────────────────
+  # Mock Gateways (Gateway 1 on 3001, Gateway 2 on 3002)
+  # ──────────────────────────────────────────────
+  gateways:
+    image: matheusprotzen/gateways-mock
+    container_name: payment_gateways
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+      - "3002:3002"
+    networks:
+      - payment_network
+
+volumes:
+  mysql_data:
+
+networks:
+  payment_network:
+    driver: bridge
