@@ -98,17 +98,14 @@ Funcionalidades principais:
 
 ```bash
 # 1. Clone o repositório
-git clone <url-do-repositorio>
-cd teste-backend
+git clone https://github.com/Vitorprogrammerjunior/payment-gateway-api.git
+cd payment-gateway-api
 
 # 2. Suba os três serviços (app Laravel + MySQL + mocks dos gateways)
 docker compose up -d --build
-
-# 3. Aguarde o MySQL ficar healthy (~15s) e rode as migrations
-docker compose exec app php artisan migrate --seed
 ```
 
-A API estará disponível em `http://localhost:8000`.
+Aguarde ~20s para o container inicializar (migrations rodam automaticamente). A API estará disponível em `http://localhost:8000`.
 
 **Serviços em execução:**
 
@@ -133,8 +130,8 @@ A API estará disponível em `http://localhost:8000`.
 
 ```bash
 # 1. Clone e instale dependências
-git clone <url-do-repositorio>
-cd teste-backend
+git clone https://github.com/Vitorprogrammerjunior/payment-gateway-api.git
+cd payment-gateway-api
 composer install
 
 # 2. Configure o ambiente
