@@ -12,15 +12,17 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Admin user
-        User::factory()->create([
-            'name'     => 'Admin',
-            'email'    => 'admin@betalent.tech',
-            'password' => Hash::make('password'),
-            'role'     => 'admin',
-        ]);
+        User::firstOrCreate(
+            ['email' => 'admin@betalent.tech'],
+            [
+                'name'     => 'Admin',
+                'password' => Hash::make('password'),
+                'role'     => 'admin',
+            ]
+        );
 
         // Gateways (priority 1 = first tried, 2 = fallback)
-        Gateway::create(['name' => 'gateway1', 'is_active' => true, 'priority' => 1]);
-        Gateway::create(['name' => 'gateway2', 'is_active' => true, 'priority' => 2]);
+        Gateway::firstOrCreate(['name' => 'gateway1'], ['is_active' => true, 'priority' => 1]);
+        Gateway::firstOrCreate(['name' => 'gateway2'], ['is_active' => true, 'priority' => 2]);
     }
 }
